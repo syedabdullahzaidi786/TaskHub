@@ -2,24 +2,24 @@
 ================================================================================
 SYNC IMPACT REPORT
 ================================================================================
-Version change: 0.0.0 → 1.0.0
-Bump rationale: MAJOR - Initial constitution ratification establishing all core
-                principles and governance for the Evolution of Todo project
+Version change: 1.0.0 → 1.1.0
+Bump rationale: MINOR - Amendment to technology matrix for Phase II full-stack
+                web application requirements. Added authentication, web frontend,
+                and updated Phase Definitions to reflect architecture evolution.
+
+Modified sections:
+  - IV. Technology Constraints - Updated phase-specific technology matrix
+  - Phase Definitions - Revised Phase I (console app) and Phase II (full-stack web)
 
 Added sections:
-  - I. Spec-Driven Development (SDD) Mandate
-  - II. Agent Behavior Rules
-  - III. Phase Governance
-  - IV. Technology Constraints
-  - V. Quality Principles
-  - Development Workflow
-  - Phase Definitions
-  - Governance
+  - Technology matrix now includes phase-gated capabilities
+  - Authentication starting Phase II
+  - Web frontend starting Phase II
 
-Removed sections: None (initial version)
+Removed sections: None
 
 Templates requiring updates:
-  ✅ plan-template.md - Constitution Check gates align with new principles
+  ✅ plan-template.md - Constitution Check gates align with updated principles
   ✅ spec-template.md - Requirements structure compatible with SDD workflow
   ✅ tasks-template.md - Phase-based structure supports governance model
 
@@ -113,37 +113,58 @@ Constitution → Specification → Plan → Tasks → Implementation
 
 **The following technology stack is mandated for the Evolution of Todo project. Deviations require constitutional amendment.**
 
-**Backend (All Phases):**
+**Phase-Gated Technology Matrix:**
+
+**Phase I: Console Application**
+- **Architecture**: In-memory console application ONLY
 - **Language**: Python 3.11+
-- **Framework**: FastAPI
-- **ORM**: SQLModel
-- **Database**: Neon DB (PostgreSQL-compatible)
+- **Data Storage**: In-memory data structures
+- **Interface**: Command-line interface
+- **Prohibited**: Web frameworks, databases, authentication, external APIs
 
-**Frontend (Phase III+):**
-- **Framework**: Next.js (React)
-- **Language**: TypeScript
+**Phase II: Full-Stack Web Application**
+- **Backend**: Python 3.11+ REST API
+- **Database**: Neon Serverless PostgreSQL
+- **ORM/Data Layer**: SQLModel or equivalent
+- **Frontend**: Next.js (React, TypeScript)
+- **Authentication**: Better Auth (signup/signin)
+- **Architecture**: Full-stack web application
+- **Allowed Starting Phase II**: Authentication, web frontend, Neon PostgreSQL
+- **Prohibited**: AI frameworks, agent frameworks, advanced orchestration
 
-**AI/Agent Layer (Phase II+):**
-- **SDK**: OpenAI Agents SDK
-- **Protocol**: Model Context Protocol (MCP)
+**Phase III and Beyond: Advanced Infrastructure**
+- **AI/Agent Layer**: OpenAI Agents SDK, Model Context Protocol (MCP)
+- **Infrastructure**: Docker, Kubernetes, Apache Kafka, Dapr
+- **Orchestration**: Advanced cloud infrastructure and distributed systems
 
-**Infrastructure (Phase IV+):**
-- **Containerization**: Docker
-- **Orchestration**: Kubernetes
-- **Messaging**: Apache Kafka
-- **Distributed Runtime**: Dapr
+**Technology Progression Rules:**
 
-**Constraints:**
+1. **Strict Phase Gates**: Technologies are locked to their designated phase. Phase N MUST NOT use technologies designated for Phase N+1.
+
+2. **Architecture Evolution**:
+   - Phase I: Console-only, no persistence
+   - Phase II: Full-stack web with database and authentication
+   - Phase III+: Cloud-native, AI-enabled, distributed systems
+
+3. **Authentication Policy**: Authentication and user management are PROHIBITED in Phase I and ALLOWED starting Phase II.
+
+4. **Web Frontend Policy**: Web interfaces are PROHIBITED in Phase I and ALLOWED starting Phase II.
+
+5. **Database Policy**: External databases are PROHIBITED in Phase I (in-memory only) and ALLOWED starting Phase II (Neon PostgreSQL).
+
+6. **AI/Agent Policy**: AI frameworks and agent SDKs are PROHIBITED until Phase III or later.
+
+**General Constraints:**
 
 1. **No Unapproved Dependencies**: Third-party libraries and dependencies MUST be approved during the planning phase. No ad-hoc dependency additions during implementation.
 
 2. **Version Pinning**: All dependencies MUST be version-pinned in requirements files or package manifests.
 
-3. **Technology Substitution**: Substituting a mandated technology requires a formal specification amendment with documented rationale.
+3. **Technology Substitution**: Substituting a mandated technology requires a formal constitutional amendment with documented rationale.
 
 4. **Cloud Provider Agnosticism**: Infrastructure code MUST remain cloud-provider agnostic unless a specific provider is mandated in the phase specification.
 
-**Rationale**: Technology standardization ensures consistency, reduces integration complexity, and enables knowledge transfer across phases.
+**Rationale**: Phase-gated technology constraints enforce architectural discipline, prevent premature complexity, and ensure each phase can be independently validated. This matrix acts as the authoritative technology policy for all phases.
 
 ### V. Quality Principles
 
@@ -238,40 +259,45 @@ Constitution → Specification → Plan → Tasks → Implementation
 
 **Reference definitions for the five phases of Evolution of Todo:**
 
-### Phase I: Foundation
-- Basic todo CRUD operations
-- Python/FastAPI backend
-- SQLModel entities
-- Neon DB integration
-- REST API endpoints
+### Phase I: Console Foundation
+- **Architecture**: In-memory console application
+- **Interface**: Command-line interface (CLI)
+- **Functionality**: Basic todo CRUD operations
+- **Language**: Python 3.11+
+- **Data Storage**: In-memory data structures (lists, dictionaries)
+- **Prohibited**: Web frameworks, databases, authentication, external services
 
-### Phase II: Intelligence
-- AI agent integration
-- OpenAI Agents SDK
-- Natural language todo processing
-- Smart categorization and prioritization
-- MCP protocol implementation
+### Phase II: Full-Stack Web Application
+- **Architecture**: Full-stack web application
+- **Backend**: Python REST API (framework TBD in planning)
+- **Database**: Neon Serverless PostgreSQL
+- **ORM**: SQLModel or equivalent
+- **Frontend**: Next.js (React, TypeScript)
+- **Authentication**: Better Auth (signup/signin flows)
+- **Features**: User management, persistent todos, web UI
+- **Prohibited**: AI frameworks, agent SDKs, advanced orchestration
 
-### Phase III: Interface
-- Next.js frontend
-- Real-time updates
-- User authentication
-- Responsive design
-- API integration
+### Phase III: Intelligence & Advanced Features
+- **AI Integration**: OpenAI Agents SDK
+- **Protocol**: Model Context Protocol (MCP)
+- **Features**: Natural language processing, smart categorization
+- **Enhanced UI**: Real-time updates, advanced interactions
+- **Infrastructure**: Containerization preparation
 
-### Phase IV: Scale
-- Docker containerization
-- Kubernetes orchestration
-- Kafka event streaming
-- Dapr distributed runtime
-- Microservices decomposition
+### Phase IV: Scale & Distribution
+- **Containerization**: Docker
+- **Orchestration**: Kubernetes
+- **Messaging**: Apache Kafka event streaming
+- **Runtime**: Dapr distributed runtime
+- **Architecture**: Microservices decomposition
+- **Features**: High availability, horizontal scaling
 
-### Phase V: Evolution
-- Multi-tenant support
-- Advanced analytics
-- Plugin architecture
-- Enterprise features
-- Performance optimization
+### Phase V: Enterprise Evolution
+- **Multi-tenancy**: Organization and team support
+- **Analytics**: Advanced insights and reporting
+- **Extensibility**: Plugin architecture
+- **Enterprise**: Advanced security, compliance, audit
+- **Optimization**: Performance tuning and cost optimization
 
 **Note**: Detailed phase specifications are defined in separate specification documents. These definitions serve as boundary markers only.
 
@@ -323,4 +349,4 @@ The following principles are immutable and cannot be amended:
 3. Phase boundaries must be respected
 4. Quality principles must be maintained
 
-**Version**: 1.0.0 | **Ratified**: 2024-12-24 | **Last Amended**: 2024-12-24
+**Version**: 1.1.0 | **Ratified**: 2024-12-24 | **Last Amended**: 2025-12-27

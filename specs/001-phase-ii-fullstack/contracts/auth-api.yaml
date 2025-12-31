@@ -1,0 +1,316 @@
+openapi: 3.0.3
+info:
+  title: Todo App - Authentication API
+  description: |
+    Authentication endpoints for Phase II Todo application using Better Auth.
+    Handles user registration, signin, signout, and session validation.
+  version: 1.0.0
+  contact:
+    name: Evolution of Todo Project
+    url: https://github.com/evolution-of-todo
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://api.todo-app.example.com
+    description: Production server (TBD)
+
+paths:
+  /auth/signup:
+    post:
+      summary: Register a new user account
+      description: |
+        Creates a new user account with email and password.
+        Password is hashed by Better Auth before storage.
+        Automatically signs in the user and creates a session.
+      operationId: signupUser
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+            examples:
+              valid:
+                summary: Valid signup
+                value:
+                  email: user@example.com
+                  password: securepassword123
+      responses:
+        '201':
+          description: User created and signed in successfully
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: todo_session=abc123; HttpOnly; Secure; SameSite=Lax; Max-Age=604800
+              description: Session cookie (7-day expiration)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+              examples:
+                success:
+                  value:
+                    id: 550e8400-e29b-41d4-a716-446655440000
+                    email: user@example.com
+                    created_at: '2025-01-27T12:00:00Z'
+        '400':
+          description: Invalid input (validation error)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_email:
+                  value:
+                    error: Invalid email format
+                    details: Email must be a valid email address
+                weak_password:
+                  value:
+                    error: Password too short
+                    details: Password must be at least 8 characters
+        '409':
+          description: Email already registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                duplicate_email:
+                  value:
+                    error: Email already exists
+                    details: An account with this email is already registered
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/signin:
+    post:
+      summary: Sign in to existing account
+      description: |
+        Authenticates a user with email and password.
+        Creates a new session on successful authentication.
+      operationId: signinUser
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninRequest'
+            examples:
+              valid:
+                summary: Valid signin
+                value:
+                  email: user@example.com
+                  password: securepassword123
+      responses:
+        '200':
+          description: Signed in successfully
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: todo_session=abc123; HttpOnly; Secure; SameSite=Lax; Max-Age=604800
+              description: Session cookie (7-day expiration)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+              examples:
+                success:
+                  value:
+                    id: 550e8400-e29b-41d4-a716-446655440000
+                    email: user@example.com
+                    created_at: '2025-01-20T08:30:00Z'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_credentials:
+                  value:
+                    error: Invalid credentials
+                    details: Email or password is incorrect
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/signout:
+    post:
+      summary: Sign out and terminate session
+      description: |
+        Terminates the current user session and clears the session cookie.
+        Requires an active session to be present.
+      operationId: signoutUser
+      tags:
+        - Authentication
+      security:
+        - cookieAuth: []
+      responses:
+        '204':
+          description: Signed out successfully (no content)
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: todo_session=; HttpOnly; Secure; SameSite=Lax; Max-Age=0
+              description: Cleared session cookie
+        '401':
+          description: Not authenticated (no active session)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                not_authenticated:
+                  value:
+                    error: Not authenticated
+                    details: No active session found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/session:
+    get:
+      summary: Get current session information
+      description: |
+        Verifies the current session and returns user information.
+        Used by frontend to check authentication status on app load.
+      operationId: getSession
+      tags:
+        - Authentication
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Active session found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+              examples:
+                active_session:
+                  value:
+                    id: 550e8400-e29b-41d4-a716-446655440000
+                    email: user@example.com
+                    created_at: '2025-01-20T08:30:00Z'
+        '401':
+          description: No active session or session expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                no_session:
+                  value:
+                    error: Not authenticated
+                    details: No active session found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: todo_session
+      description: Session cookie created by Better Auth
+
+  schemas:
+    SignupRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          description: User's email address (must be unique)
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          description: User's password (min 8 characters)
+          example: securepassword123
+
+    SigninRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          description: User's email address
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          description: User's password
+          example: securepassword123
+
+    UserResponse:
+      type: object
+      required:
+        - id
+        - email
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique user identifier
+          example: 550e8400-e29b-41d4-a716-446655440000
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: user@example.com
+        created_at:
+          type: string
+          format: date-time
+          description: Account creation timestamp (ISO 8601)
+          example: '2025-01-27T12:00:00Z'
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Brief user-friendly error message
+          example: Invalid email format
+        details:
+          type: string
+          description: Optional detailed error information
+          example: Email must be a valid email address
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
