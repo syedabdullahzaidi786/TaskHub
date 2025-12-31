@@ -85,8 +85,8 @@ async def signup(
         key="session_token",
         value=token,
         httponly=True,
-        secure=False,  # Set to True in production with HTTPS
-        samesite="lax",
+        secure=True,     # Required for cross-domain (None)
+        samesite="none", # Required for cross-domain
         max_age=7 * 24 * 60 * 60  # 7 days
     )
 
@@ -133,8 +133,8 @@ async def signin(
         key="session_token",
         value=token,
         httponly=True,
-        secure=False,  # Set to True in production with HTTPS
-        samesite="lax",
+        secure=True,     # Required for cross-domain (None)
+        samesite="none", # Required for cross-domain
         max_age=7 * 24 * 60 * 60  # 7 days
     )
 
@@ -160,7 +160,12 @@ async def signout(
     - Clears session cookie
     """
     # Clear session cookie
-    response.delete_cookie(key="session_token")
+    response.delete_cookie(
+        key="session_token",
+        httponly=True,
+        secure=True,
+        samesite="none"
+    )
 
     return MessageResponse(message="Signed out successfully")
 
