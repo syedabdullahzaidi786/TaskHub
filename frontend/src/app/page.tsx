@@ -1,10 +1,12 @@
 import Hero from "@/components/home/Hero";
 import Features from "@/components/home/Features";
+import TaskHubAgentPreview from "@/components/home/TaskHubAgentPreview";
 
 export default function HomePage() {
   return (
     <div className="flex flex-col">
       <Hero />
+      <TaskHubAgentPreview />
       <Features />
 
       {/* Visual divider or additional section if needed */}
