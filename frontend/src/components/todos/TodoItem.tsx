@@ -38,7 +38,7 @@ export default function TodoItem({
                     : "border-slate-100 hover:border-indigo-100 hover:shadow-lg hover:shadow-indigo-500/5"
             )}
         >
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-3 sm:gap-4">
                 {/* Custom Checkbox */}
                 <button
                     onClick={() => onToggle(todo.id, !todo.completed)}
@@ -85,7 +85,7 @@ export default function TodoItem({
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center gap-1 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                             <button
                                 onClick={() => onEdit(todo)}
                                 className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
