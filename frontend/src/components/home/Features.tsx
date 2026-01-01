@@ -75,15 +75,14 @@ const Features = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, margin: "-100px" }}
                             transition={{
-                                duration: 0.8,
-                                delay: index * 0.1,
-                                ease: [0.16, 1, 0.3, 1]
+                                duration: 0.5,
+                                delay: index * 0.05
                             }}
                             className="group relative"
                         >
                             <div className="absolute inset-0 bg-gradient-to-b from-slate-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl -m-6" />
 
-                            <div className={`w-16 h-16 rounded-2xl ${feature.color} flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+                            <div className={`w-16 h-16 rounded-2xl ${feature.color} flex items-center justify-center mb-8 shadow-sm transition-all duration-300`}>
                                 <feature.icon className="w-8 h-8" />
                             </div>
 

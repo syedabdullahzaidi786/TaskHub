@@ -199,10 +199,10 @@ export default function TodosPage() {
               <LayoutDashboard className="w-4 h-4" />
               Productivity Workspace
             </div>
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-              Welcome, <span className="text-indigo-600">{user?.email.split('@')[0]}</span>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight break-words max-w-[90vw] md:max-w-none">
+              Welcome, <span className="text-indigo-600 block sm:inline">{user?.email.split('@')[0]}</span>
             </h1>
-            <p className="text-slate-500 mt-1">You have {pendingCount} pending tasks today.</p>
+            <p className="text-slate-500 text-sm sm:text-base mt-1">You have {pendingCount} pending tasks today.</p>
           </div>
           <div className="flex items-center gap-3">
             <Button
@@ -215,17 +215,17 @@ export default function TodosPage() {
             </Button>
             <Button
               onClick={handleAddNew}
-              className="shadow-xl shadow-indigo-200 group h-12 px-6"
+              className="shadow-xl shadow-indigo-200 group h-12 px-4 sm:px-6"
             >
-              <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-              Create New Task
+              <Plus className="w-5 h-5 sm:mr-2 group-hover:rotate-90 transition-transform duration-300" />
+              <span className="hidden sm:inline">Create New Task</span>
             </Button>
           </div>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="md:col-span-2 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="sm:col-span-2 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between">
             <div className="flex justify-between items-center mb-4">
               <span className="text-sm font-bold uppercase tracking-wider text-slate-400">Total Progress</span>
               <span className="text-indigo-600 font-black text-xl">{Math.round(progress)}%</span>

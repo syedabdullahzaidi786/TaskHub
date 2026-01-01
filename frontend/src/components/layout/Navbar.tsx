@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, CheckSquare, LayoutDashboard, LogIn, UserPlus } from "lucide-react";
+import { Menu, X, CheckSquare, LayoutDashboard, LogIn, UserPlus, ChevronDown, User, LogOut } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useAuth } from "@/lib/auth/context";
 import { signout } from "@/lib/api/auth";
@@ -17,6 +17,7 @@ const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
     const { user, clearUser } = useAuth();
@@ -107,14 +108,61 @@ const Navbar = () => {
                         ))}
 
                         {user && (
-                            <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-slate-200">
-                                <span className="text-sm text-slate-500 font-medium">{user.email}</span>
+                            <div className="relative ml-4 pl-4 border-l border-slate-200">
                                 <button
-                                    onClick={handleSignoutClick}
-                                    className="text-sm font-semibold text-rose-600 hover:text-rose-700 transition-colors"
+                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                    className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-slate-50 transition-all text-slate-700 font-semibold text-sm group"
                                 >
-                                    Sign Out
+                                    <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
+                                        <User className="w-4 h-4" />
+                                    </div>
+                                    <span className="max-w-[150px] truncate">{user.email}</span>
+                                    <ChevronDown className={cn("w-4 h-4 text-slate-400 transition-transform duration-300", isDropdownOpen && "rotate-180")} />
                                 </button>
+
+                                <AnimatePresence>
+                                    {isDropdownOpen && (
+                                        <>
+                                            {/* Invisible backdrop to close dropdown */}
+                                            <div
+                                                className="fixed inset-0 z-10"
+                                                onClick={() => setIsDropdownOpen(false)}
+                                            />
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-20 origin-top-right"
+                                            >
+                                                <div className="px-4 py-3 border-b border-slate-50 bg-slate-50/50">
+                                                    <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-1">Signed in as</p>
+                                                    <p className="text-sm font-bold text-slate-900 truncate">{user.email}</p>
+                                                </div>
+                                                <div className="p-2">
+                                                    <Link
+                                                        href="/todos"
+                                                        onClick={() => setIsDropdownOpen(false)}
+                                                        className="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all"
+                                                    >
+                                                        <LayoutDashboard className="w-4 h-4" />
+                                                        <span>Dashboard</span>
+                                                    </Link>
+                                                    <button
+                                                        onClick={() => {
+                                                            setIsDropdownOpen(false);
+                                                            handleSignoutClick();
+                                                        }}
+                                                        className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-all"
+                                                    >
+                                                        <LogOut className="w-4 h-4" />
+                                                        <span>Sign Out</span>
+                                                    </button>
+                                                </div>
+                                            </motion.div>
+                                        </>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         )}
                     </div>

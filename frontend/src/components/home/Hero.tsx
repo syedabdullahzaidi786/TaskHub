@@ -1,22 +1,22 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle, Star, Sparkles } from "lucide-react";
+import { CheckCircle, Star, PlayCircle } from "lucide-react";
 import Button from "@/components/ui/Button";
-import dynamic from "next/dynamic";
+import DashboardMockup from "./DashboardMockup";
+import VideoModal from "@/components/ui/VideoModal";
+import PWAInstallButton from "@/components/ui/PWAInstallButton";
 
-const Scene3D = dynamic(() => import("./Scene3D"), { ssr: false });
+
 
 const Hero = () => {
+    const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+
     return (
         <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden pt-20 pb-16 bg-white">
-            {/* 3D Dynamic Accent */}
-            <div className="absolute top-1/4 -right-20 w-[600px] h-[600px] opacity-40">
-                <Scene3D />
-            </div>
+
 
             {/* Subtle Background Gradients */}
             <div className="absolute top-0 right-0 w-[50%] h-full bg-gradient-to-l from-indigo-50/50 to-transparent -z-[5]" />
@@ -36,9 +36,9 @@ const Hero = () => {
                         </motion.div>
 
                         <motion.h1
-                            initial={{ opacity: 0, y: 30 }}
+                            initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                            transition={{ duration: 0.5 }}
                             className="text-6xl md:text-8xl font-black tracking-tight text-slate-900 mb-8 leading-[0.95]"
                         >
                             Organize <br />
@@ -46,9 +46,9 @@ const Hero = () => {
                         </motion.h1>
 
                         <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
                             className="text-xl text-slate-500 max-w-lg mb-12 leading-relaxed font-medium"
                         >
                             TaskHub is the workspace where focus meets fluidity.
@@ -56,9 +56,9 @@ const Hero = () => {
                         </motion.p>
 
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.5, delay: 0.3 }}
                             className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
                         >
                             <Link href="/signup" className="w-full sm:w-auto">
@@ -66,11 +66,16 @@ const Hero = () => {
                                     Get Started Free
                                 </Button>
                             </Link>
-                            <Link href="/signin" className="w-full sm:w-auto">
-                                <Button variant="ghost" size="lg" className="w-full sm:w-auto px-12 py-5 text-lg font-semibold text-slate-600 hover:bg-slate-50 transition-all rounded-2xl border border-slate-100">
-                                    Demo Video
-                                </Button>
-                            </Link>
+                            <Button
+                                variant="ghost"
+                                size="lg"
+                                className="w-full sm:w-auto px-12 py-5 text-lg font-semibold text-slate-600 hover:bg-slate-50 transition-all rounded-2xl border border-slate-100 flex items-center justify-center gap-2"
+                                onClick={() => setIsVideoModalOpen(true)}
+                            >
+                                <PlayCircle className="w-5 h-5 text-indigo-600" />
+                                Demo Video
+                            </Button>
+                            <PWAInstallButton />
                         </motion.div>
 
                         {/* Logo Cloud / Trust */}
@@ -93,43 +98,20 @@ const Hero = () => {
                     <motion.div
                         initial={{ opacity: 0, x: 40, scale: 0.95 }}
                         animate={{ opacity: 1, x: 0, scale: 1 }}
-                        transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 1.2, delay: 0.4 }}
                         className="hidden lg:block relative"
                     >
-                        <div className="relative z-10 rounded-3xl overflow-hidden shadow-[0_48px_96px_-24px_rgba(0,0,0,0.12)] border border-slate-200 transition-all hover:scale-[1.01] duration-700 bg-white">
-                            <Image
-                                src="/dashboard.png"
-                                alt="TaskHub Dashboard Mockup"
-                                width={1200}
-                                height={800}
-                                className="w-full h-auto"
-                                priority
-                            />
+                        <div className="relative z-10 transition-all hover:scale-[1.01] duration-700">
+                            <DashboardMockup />
                         </div>
-
-                        {/* Floating UI Elements (Fake) */}
-                        <motion.div
-                            animate={{ y: [0, -15, 0] }}
-                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                            className="absolute -top-12 -left-12 p-6 bg-white rounded-2xl shadow-2xl border border-slate-100 hidden xl:block"
-                        >
-                            <CheckCircle className="w-8 h-8 text-emerald-500 mb-2" />
-                            <div className="w-24 h-2 bg-slate-100 rounded-full" />
-                            <div className="w-16 h-2 bg-slate-50 rounded-full mt-2" />
-                        </motion.div>
-
-                        <motion.div
-                            animate={{ y: [0, 20, 0] }}
-                            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                            className="absolute -bottom-8 -right-8 p-6 bg-white rounded-2xl shadow-2xl border border-slate-100 hidden xl:block"
-                        >
-                            <Star className="w-8 h-8 text-amber-500 mb-2" />
-                            <div className="w-20 h-2 bg-slate-100 rounded-full" />
-                            <div className="w-12 h-2 bg-slate-50 rounded-full mt-2" />
-                        </motion.div>
                     </motion.div>
                 </div>
             </div>
+            <VideoModal
+                isOpen={isVideoModalOpen}
+                onClose={() => setIsVideoModalOpen(false)}
+                videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" // Example placeholder
+            />
         </section>
     );
 };
