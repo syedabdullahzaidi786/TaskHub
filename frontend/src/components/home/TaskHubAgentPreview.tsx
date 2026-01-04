@@ -21,7 +21,7 @@ const TaskHubAgentPreview = () => {
                             className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 mb-6"
                         >
                             <Sparkles className="w-4 h-4 text-indigo-600" />
-                            <span className="text-sm font-bold text-indigo-700 uppercase tracking-wider">Coming Soon</span>
+                            <span className="text-sm font-bold text-indigo-700 uppercase tracking-wider">New Feature</span>
                         </motion.div>
 
                         <motion.h2
