@@ -1,0 +1,64 @@
+tools:
+  - name: add_task
+    description: Create a new task in the todo list.
+    parameters:
+      type: OBJECT
+      properties:
+        title:
+          type: STRING
+          description: The title of the task.
+        description:
+          type: STRING
+          description: Optional details about the task.
+      required:
+        - title
+
+  - name: list_tasks
+    description: Retrieve a list of tasks, optionally filtered by status.
+    parameters:
+      type: OBJECT
+      properties:
+        status:
+          type: STRING
+          enum: ["all", "pending", "completed"]
+          description: Filter tasks by their completion status. Defaults to "all".
+      required: []
+
+  - name: complete_task
+    description: Mark a specific task as completed.
+    parameters:
+      type: OBJECT
+      properties:
+        task_id:
+          type: STRING
+          description: The unique ID of the task to complete.
+      required:
+        - task_id
+
+  - name: delete_task
+    description: Permanently remove a task from the list.
+    parameters:
+      type: OBJECT
+      properties:
+        task_id:
+          type: STRING
+          description: The unique ID of the task to delete.
+      required:
+        - task_id
+
+  - name: update_task
+    description: Modify the title or description of an existing task.
+    parameters:
+      type: OBJECT
+      properties:
+        task_id:
+          type: STRING
+          description: The unique ID of the task to update.
+        title:
+          type: STRING
+          description: The new title for the task.
+        description:
+          type: STRING
+          description: The new description for the task.
+      required:
+        - task_id
