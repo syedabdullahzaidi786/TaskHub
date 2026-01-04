@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { Todo, listTodos, createTodo, updateTodo, deleteTodo, Priority } from "@/lib/api/todos";
 import TodoItem from "@/components/todos/TodoItem";
 import TaskModal from "@/components/todos/TaskModal";
+import ChatInterface from "@/components/chat/ChatInterface";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/utils/cn";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -438,6 +439,8 @@ export default function TodosPage() {
           </div>
         </div>
       </div>
+
+      <ChatInterface />
     </div>
   );
 }
