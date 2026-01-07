@@ -32,7 +32,7 @@ const Hero = () => {
                             className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 mb-8 backdrop-blur-sm"
                         >
                             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="text-xs font-bold text-slate-600 uppercase tracking-[0.2em]">Next Era of Productivity</span>
+                            <span className="text-xs font-bold text-slate-600 uppercase tracking-[0.2em]">The Evolution of Todo</span>
                         </motion.div>
 
                         <motion.h1

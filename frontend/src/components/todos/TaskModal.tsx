@@ -24,7 +24,7 @@ export default function TaskModal({
 }: TaskModalProps) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [priority, setPriority] = useState<Priority>("Medium");
+    const [priority, setPriority] = useState<Priority>("MEDIUM");
     const [category, setCategory] = useState("General");
     const [dueDate, setDueDate] = useState("");
     const [error, setError] = useState("");
@@ -33,13 +33,13 @@ export default function TaskModal({
         if (initialData) {
             setTitle(initialData.title);
             setDescription(initialData.description || "");
-            setPriority(initialData.priority || "Medium");
+            setPriority(initialData.priority || "MEDIUM");
             setCategory(initialData.category || "General");
             setDueDate(initialData.due_date ? new Date(initialData.due_date).toISOString().split('T')[0] : "");
         } else {
             setTitle("");
             setDescription("");
-            setPriority("Medium");
+            setPriority("MEDIUM");
             setCategory("General");
             setDueDate("");
         }
@@ -143,9 +143,9 @@ export default function TaskModal({
                                             onChange={(e) => setPriority(e.target.value as Priority)}
                                             className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200"
                                         >
-                                            <option value="Low">Low</option>
-                                            <option value="Medium">Medium</option>
-                                            <option value="High">High</option>
+                                            <option value="LOW">Low</option>
+                                            <option value="MEDIUM">Medium</option>
+                                            <option value="HIGH">High</option>
                                         </select>
                                     </div>
                                     <div className="space-y-1.5">

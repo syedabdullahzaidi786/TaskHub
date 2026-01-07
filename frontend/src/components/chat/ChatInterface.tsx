@@ -142,22 +142,22 @@ export default function ChatInterface() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed bottom-24 right-6 w-96 h-[600px] max-h-[80vh] bg-white rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden z-50 glass-effect"
+                        className="fixed bottom-20 sm:bottom-24 right-2 sm:right-6 w-[calc(100vw-1rem)] sm:w-96 h-[calc(100vh-6rem)] sm:h-[600px] max-h-[85vh] sm:max-h-[80vh] bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden z-50 glass-effect"
                         style={{
                             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 15px rgba(99, 102, 241, 0.1)"
                         }}
                     >
                         {/* Header */}
-                        <div className="p-4 bg-white/80 backdrop-blur-md border-b border-slate-100 flex justify-between items-center sticky top-0 z-10">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-                                    <Bot className="w-6 h-6" />
+                        <div className="p-3 sm:p-4 bg-white/80 backdrop-blur-md border-b border-slate-100 flex justify-between items-center sticky top-0 z-10">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                                    <Bot className="w-5 h-5 sm:w-6 sm:h-6" />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-slate-800">TaskHub Agent</h3>
+                                    <h3 className="text-sm sm:text-base font-bold text-slate-800">TaskHub Agent</h3>
                                     <div className="flex items-center gap-1.5">
                                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Gemini Flash (Latest)</span>
+                                        <span className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 tracking-wider">Autonomous AI Assistant</span>
                                     </div>
                                 </div>
                             </div>
@@ -278,10 +278,10 @@ export default function ChatInterface() {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setIsOpen(true)}
-                    className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-full shadow-2xl shadow-indigo-400/50 flex items-center justify-center text-white z-50 group hover:ring-4 hover:ring-indigo-100 transition-all duration-300"
+                    className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-full shadow-2xl shadow-indigo-400/50 flex items-center justify-center text-white z-50 group hover:ring-4 hover:ring-indigo-100 transition-all duration-300"
                 >
                     <div className="absolute inset-0 rounded-full bg-white/20 animate-ping opacity-0 group-hover:opacity-75 transition-opacity duration-1000" />
-                    <MessageCircle className="w-7 h-7 relative z-10" />
+                    <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 relative z-10" />
                 </motion.button>
             )}
         </>
