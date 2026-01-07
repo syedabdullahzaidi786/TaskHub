@@ -25,11 +25,16 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     // Extract error message from response
-    const message =
+    let message =
       error.response?.data?.detail ||
       error.response?.data?.message ||
       error.message ||
       "An unexpected error occurred";
+
+    // Ensure message is a string
+    if (typeof message === "object") {
+        message = JSON.stringify(message);
+    }
 
     // Attach formatted error message
     error.userMessage = message;

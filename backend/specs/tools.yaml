@@ -62,3 +62,18 @@ tools:
           description: The new description for the task.
       required:
         - task_id
+
+  - name: update_task_status
+    description: Update the completion status of a task. Use this to mark tasks as complete (true) or pending (false).
+    parameters:
+      type: OBJECT
+      properties:
+        task_id:
+          type: STRING
+          description: The unique ID of the task to update.
+        completed:
+          type: BOOLEAN
+          description: Set to true to mark as complete, false to mark as pending.
+      required:
+        - task_id
+        - completed

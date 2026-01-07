@@ -4,7 +4,7 @@
  */
 import { apiClient } from "./client";
 
-export type Priority = "Low" | "Medium" | "High";
+export type Priority = "LOW" | "MEDIUM" | "HIGH";
 
 export interface Todo {
     id: string;

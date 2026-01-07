@@ -109,13 +109,34 @@ def update_task(session: Session, user_id: str, task_id: str, title: str = None,
     except Exception as e:
         return {"error": str(e)}
 
+def update_task_status(session: Session, user_id: str, task_id: str, completed: bool) -> Dict[str, Any]:
+    """Update task completion status (mark as complete or pending)"""
+    try:
+        user_uuid = UUID(user_id)
+        task_uuid = UUID(task_id) if isinstance(task_id, str) else task_id
+        
+        todo = session.get(Todo, task_uuid)
+        if not todo or todo.user_id != user_uuid:
+            return {"error": "Task not found"}
+        
+        todo.completed = completed
+        todo.updated_at = datetime.utcnow()
+        session.add(todo)
+        session.commit()
+        
+        status_text = "completed" if completed else "pending"
+        return {"task_id": str(todo.id), "status": status_text, "title": todo.title}
+    except Exception as e:
+        return {"error": str(e)}
+
 # Map tool names to functions
 TOOL_MAP = {
     "add_task": add_task,
     "list_tasks": list_tasks,
     "complete_task": complete_task,
     "delete_task": delete_task,
-    "update_task": update_task
+    "update_task": update_task,
+    "update_task_status": update_task_status
 }
 
 def get_gemini_tools_declaration():

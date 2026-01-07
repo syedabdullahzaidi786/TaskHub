@@ -20,9 +20,9 @@ export default function TodoItem({
     onEdit,
 }: TodoItemProps) {
     const priorityColors = {
-        High: "bg-rose-100 text-rose-700 border-rose-200",
-        Medium: "bg-amber-100 text-amber-700 border-amber-200",
-        Low: "bg-slate-100 text-slate-700 border-slate-200",
+        HIGH: "bg-rose-100 text-rose-700 border-rose-200",
+        MEDIUM: "bg-amber-100 text-amber-700 border-amber-200",
+        LOW: "bg-slate-100 text-slate-700 border-slate-200",
     };
 
     return (
@@ -66,10 +66,10 @@ export default function TodoItem({
                             <div className="flex flex-wrap items-center gap-2">
                                 <span className={cn(
                                     "px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wider flex items-center gap-1",
-                                    priorityColors[todo.priority || "Medium"]
+                                    priorityColors[todo.priority || "MEDIUM"]
                                 )}>
                                     <AlertCircle className="w-3 h-3" />
-                                    {todo.priority || "Medium"}
+                                    {todo.priority || "MEDIUM"}
                                 </span>
                                 <span className="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
                                     <Tag className="w-3 h-3" />

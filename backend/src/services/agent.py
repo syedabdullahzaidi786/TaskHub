@@ -36,26 +36,43 @@ async def run_agent(
     if not GENAI_KEY:
         return {"response": "Error: GEMINI_API_KEY not configured. Please check your .env file.", "tool_calls": []}
 
+    # Retry configuration
+    max_retries = 3
+    base_delay = 2
+
+    import time
+    from google.api_core import exceptions
+    
     try:
         # Load Tools
         tools_decl = get_gemini_tools_declaration()
         
         # Instantiate model with tools
-        # tools_decl is a list of dicts. Pass it directly as 'tools'.
+        # Switch to gemini-2.5-flash as requested
         model = genai.GenerativeModel(
-            model_name='gemini-flash-latest',
+            model_name='gemini-2.5-flash',
             tools=tools_decl
         )
 
         # Re-hydrate chat session
         chat = model.start_chat(history=format_history_for_gemini(history_messages))
 
-        # Send message
-        response = chat.send_message(message)
-        
-        tool_results = []
         final_text_response = ""
-
+        tool_results = []
+        
+        # Initial message send with retry
+        response = None
+        for attempt in range(max_retries + 1):
+            try:
+                response = chat.send_message(message)
+                break
+            except exceptions.ResourceExhausted:
+                if attempt == max_retries:
+                    raise
+                delay = base_delay * (2 ** attempt)
+                print(f"Quota exceeded, retrying in {delay}s...")
+                time.sleep(delay)
+        
         # Check for tool calls
         # We iterate through parts to find function calls
         for part in response.parts:
@@ -86,7 +103,7 @@ async def run_agent(
                         "result": result
                     })
                     
-                    # Send result back to model
+                    # Send result back to model with retry
                     function_response_part = genai.protos.Part(
                         function_response=genai.protos.FunctionResponse(
                             name=tool_name,
@@ -94,7 +111,17 @@ async def run_agent(
                         )
                     )
                     
-                    final_response = chat.send_message([function_response_part])
+                    for attempt in range(max_retries + 1):
+                        try:
+                            final_response = chat.send_message([function_response_part])
+                            break
+                        except exceptions.ResourceExhausted:
+                            if attempt == max_retries:
+                                raise
+                            delay = base_delay * (2 ** attempt)
+                            print(f"Quota exceeded during tool response, retrying in {delay}s...")
+                            time.sleep(delay)
+
                     # Safely extract text from the final response
                     for final_part in final_response.parts:
                         try:
@@ -124,6 +151,11 @@ async def run_agent(
             "tool_calls": tool_results
         }
 
+    except exceptions.ResourceExhausted:
+        return {
+            "response": "Error: AI rate limit exceeded. Please try again later.",
+            "tool_calls": []
+        }
     except Exception as e:
         print(f"Error in run_agent: {e}")
         import traceback

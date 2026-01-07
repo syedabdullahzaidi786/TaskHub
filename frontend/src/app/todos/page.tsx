@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/context";
 import Spinner from "@/components/ui/Spinner";
 import Button from "@/components/ui/Button";
-import { Plus, ClipboardList, LayoutDashboard, Search, Filter, RefreshCw, CheckCircle2, AlertTriangle, ListTodo, BarChart3 } from "lucide-react";
+import { Plus, ClipboardList, LayoutDashboard, Search, Filter, RefreshCw, CheckCircle2, AlertTriangle, ListTodo, BarChart3, Sparkles, Edit3, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Todo, listTodos, createTodo, updateTodo, deleteTodo, Priority } from "@/lib/api/todos";
 import TodoItem from "@/components/todos/TodoItem";
@@ -18,6 +18,7 @@ import ChatInterface from "@/components/chat/ChatInterface";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/utils/cn";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import AgentCommandsModal from "@/components/ui/AgentCommandsModal";
 
 export default function TodosPage() {
   const router = useRouter();
@@ -43,6 +44,9 @@ export default function TodosPage() {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Agent Commands Modal State
+  const [isAgentCommandsOpen, setIsAgentCommandsOpen] = useState(false);
 
   // Redirect to signin if not authenticated
   useEffect(() => {
@@ -173,7 +177,7 @@ export default function TodosPage() {
   // Stats Logic
   const pendingCount = todos.filter(t => !t.completed).length;
   const completedCount = todos.filter(t => t.completed).length;
-  const highPriorityCount = todos.filter(t => t.priority === "High" && !t.completed).length;
+  const highPriorityCount = todos.filter(t => t.priority === "HIGH" && !t.completed).length;
   const progress = todos.length > 0 ? (completedCount / todos.length) * 100 : 0;
 
   // Show loading spinner while checking auth or loading data initially
@@ -206,6 +210,15 @@ export default function TodosPage() {
             <p className="text-slate-500 text-sm sm:text-base mt-1">You have {pendingCount} pending tasks today.</p>
           </div>
           <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              onClick={() => setIsAgentCommandsOpen(true)}
+              className="bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200 h-12 px-4 hover:from-indigo-100 hover:to-purple-100"
+              title="View AI Commands"
+            >
+              <Sparkles className="w-5 h-5 text-indigo-600 mr-2" />
+              <span className="hidden sm:inline font-semibold text-indigo-700">Commands</span>
+            </Button>
             <Button
               variant="outline"
               onClick={() => fetchTodos()}
@@ -303,9 +316,9 @@ export default function TodosPage() {
                       className="w-full px-4 py-2 rounded-xl bg-slate-50 border-none text-sm font-medium focus:ring-2 focus:ring-indigo-500/20"
                     >
                       <option value="all">All Priorities</option>
-                      <option value="High">High Only</option>
-                      <option value="Medium">Medium Only</option>
-                      <option value="Low">Low Only</option>
+                      <option value="HIGH">High Only</option>
+                      <option value="MEDIUM">Medium Only</option>
+                      <option value="LOW">Low Only</option>
                     </select>
                   </div>
                   <div className="space-y-1.5">
@@ -439,6 +452,12 @@ export default function TodosPage() {
           </div>
         </div>
       </div>
+
+      {/* Agent Commands Modal */}
+      <AgentCommandsModal
+        isOpen={isAgentCommandsOpen}
+        onClose={() => setIsAgentCommandsOpen(false)}
+      />
 
       <ChatInterface />
     </div>
