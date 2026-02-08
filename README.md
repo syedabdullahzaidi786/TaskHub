@@ -140,11 +140,12 @@ cd frontend
 npm test
 ```
 
+### Docker Commands
+```bash
+docker compose up
+docker compose down
+```
+
 ## License
 
 MIT License - See LICENSE file for details
-
-
-Last Prompt ya hay jo chori thi band say pahlay
-
-Set up Neon database and test authentication 
