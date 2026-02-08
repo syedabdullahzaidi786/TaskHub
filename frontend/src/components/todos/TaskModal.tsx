@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Calendar, Flag, Tag } from "lucide-react";
+import { X, Calendar, Flag, Tag, Repeat, Clock } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import { Todo, Priority } from "@/lib/api/todos";
+import { Todo, Priority, PriorityValues } from "@/lib/api/todos";
 
 interface TaskModalProps {
     isOpen: boolean;
@@ -24,24 +24,33 @@ export default function TaskModal({
 }: TaskModalProps) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [priority, setPriority] = useState<Priority>("MEDIUM");
+    const [priority, setPriority] = useState<Priority>(PriorityValues.MEDIUM);
     const [category, setCategory] = useState("General");
     const [dueDate, setDueDate] = useState("");
+    const [isRecurring, setIsRecurring] = useState(false);
+    const [recurrenceInterval, setRecurrenceInterval] = useState("daily");
+    const [tags, setTags] = useState("");
     const [error, setError] = useState("");
 
     useEffect(() => {
         if (initialData) {
             setTitle(initialData.title);
             setDescription(initialData.description || "");
-            setPriority(initialData.priority || "MEDIUM");
+            setPriority(initialData.priority || PriorityValues.MEDIUM);
             setCategory(initialData.category || "General");
-            setDueDate(initialData.due_date ? new Date(initialData.due_date).toISOString().split('T')[0] : "");
+            setDueDate(initialData.due_date ? new Date(initialData.due_date).toISOString().slice(0, 16) : "");
+            setIsRecurring(initialData.is_recurring);
+            setRecurrenceInterval(initialData.recurrence_interval || "daily");
+            setTags(initialData.tags?.join(", ") || "");
         } else {
             setTitle("");
             setDescription("");
-            setPriority("MEDIUM");
+            setPriority(PriorityValues.MEDIUM);
             setCategory("General");
             setDueDate("");
+            setIsRecurring(false);
+            setRecurrenceInterval("daily");
+            setTags("");
         }
         setError("");
     }, [initialData, isOpen]);
@@ -59,6 +68,9 @@ export default function TaskModal({
                 description: description.trim() || undefined,
                 priority,
                 category: category.trim() || "General",
+                is_recurring: isRecurring,
+                recurrence_interval: isRecurring ? recurrenceInterval : null,
+                tags: tags.split(",").map(t => t.trim()).filter(Boolean),
             };
 
             if (dueDate) {
@@ -167,11 +179,50 @@ export default function TaskModal({
                                         <Calendar className="w-3 h-3" /> Due Date (optional)
                                     </label>
                                     <input
-                                        type="date"
+                                        type="datetime-local"
                                         value={dueDate}
                                         onChange={(e) => setDueDate(e.target.value)}
                                         className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200"
                                     />
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-sm font-semibold text-slate-700 ml-1 flex items-center gap-1">
+                                        <Tag className="w-3 h-3" /> Tags (comma separated)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="urgent, work, project..."
+                                        value={tags}
+                                        onChange={(e) => setTags(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-200"
+                                    />
+                                </div>
+
+                                <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <input
+                                        type="checkbox"
+                                        id="recurring"
+                                        checked={isRecurring}
+                                        onChange={(e) => setIsRecurring(e.target.checked)}
+                                        className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
+                                    />
+                                    <label htmlFor="recurring" className="text-sm font-medium text-slate-700 flex items-center gap-1 cursor-pointer select-none flex-1">
+                                        <Repeat className="w-4 h-4" /> Recurring Task
+                                    </label>
+
+                                    {isRecurring && (
+                                        <select
+                                            value={recurrenceInterval}
+                                            onChange={(e) => setRecurrenceInterval(e.target.value)}
+                                            className="ml-auto px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                                        >
+                                            <option value="daily">Daily</option>
+                                            <option value="weekly">Weekly</option>
+                                            <option value="monthly">Monthly</option>
+                                            <option value="yearly">Yearly</option>
+                                        </select>
+                                    )}
                                 </div>
 
                                 <div className="pt-4 flex flex-col-reverse sm:flex-row gap-3 bg-white sticky bottom-0 z-10">

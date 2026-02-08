@@ -12,6 +12,7 @@ import Button from "@/components/ui/Button";
 import { Plus, ClipboardList, LayoutDashboard, Search, Filter, RefreshCw, CheckCircle2, AlertTriangle, ListTodo, BarChart3, Sparkles, Edit3, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Todo, listTodos, createTodo, updateTodo, deleteTodo, Priority } from "@/lib/api/todos";
+import { ArrowUpDown } from "lucide-react";
 import TodoItem from "@/components/todos/TodoItem";
 import TaskModal from "@/components/todos/TaskModal";
 import ChatInterface from "@/components/chat/ChatInterface";
@@ -35,9 +36,12 @@ export default function TodosPage() {
   const [lastSynced, setLastSynced] = useState<Date>(new Date());
 
   // Search & Filter State
+  // Search & Filter State
   const [searchQuery, setSearchQuery] = useState("");
   const [filterPriority, setFilterPriority] = useState<Priority | "all">("all");
   const [filterCategory, setFilterCategory] = useState("all");
+  const [sortBy, setSortBy] = useState<"created_at" | "due_date" | "priority">("created_at");
+  const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [showFilters, setShowFilters] = useState(false);
 
   // Delete Confirmation State
@@ -55,12 +59,15 @@ export default function TodosPage() {
     }
   }, [isAuthLoading, isAuthenticated, router]);
 
-  // Fetch todos on mount
+  // Fetch todos on mount and filter change
   useEffect(() => {
     if (isAuthenticated) {
-      fetchTodos();
+      const timer = setTimeout(() => {
+        fetchTodos();
+      }, 300); // Debounce search
+      return () => clearTimeout(timer);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, searchQuery, filterPriority, sortBy, order]);
 
   // Sync on window focus
   useEffect(() => {
@@ -78,7 +85,12 @@ export default function TodosPage() {
     if (!silent) setIsDataLoading(true);
     setSyncStatus("syncing");
     try {
-      const data = await listTodos();
+      const data = await listTodos({
+        priority: filterPriority === "all" ? undefined : filterPriority,
+        search: searchQuery || undefined,
+        sort_by: sortBy,
+        order: order
+      });
       setTodos(data);
       setSyncStatus("synced");
       setLastSynced(new Date());
@@ -164,12 +176,10 @@ export default function TodosPage() {
   };
 
   // Filtering Logic
+  // Client-side filtering for Category only (as API doesn't support it yet)
   const filteredTodos = todos.filter(todo => {
-    const matchesSearch = todo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      todo.description?.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesPriority = filterPriority === "all" || todo.priority === filterPriority;
     const matchesCategory = filterCategory === "all" || todo.category === filterCategory;
-    return matchesSearch && matchesPriority && matchesCategory;
+    return matchesCategory;
   });
 
   const categories = Array.from(new Set(todos.map(t => t.category || "General")));
@@ -286,6 +296,23 @@ export default function TodosPage() {
               />
             </div>
             <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 bg-slate-50 rounded-2xl p-1 border border-slate-100">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="bg-transparent text-sm font-bold text-slate-600 outline-none pl-3"
+                >
+                  <option value="created_at">Created</option>
+                  <option value="due_date">Due Date</option>
+                  <option value="priority">Priority</option>
+                </select>
+                <button
+                  onClick={() => setOrder(order === "asc" ? "desc" : "asc")}
+                  className="p-2 hover:bg-white rounded-xl transition-all shadow-sm"
+                >
+                  <ArrowUpDown className="w-4 h-4 text-slate-500" />
+                </button>
+              </div>
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className={cn(

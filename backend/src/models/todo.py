@@ -7,6 +7,7 @@ from typing import Optional
 from uuid import UUID, uuid4
 from sqlmodel import Field, SQLModel
 from enum import Enum
+from sqlalchemy import Column, JSON
 
 
 class Priority(str, Enum):
@@ -78,4 +79,20 @@ class Todo(SQLModel, table=True):
     updated_at: datetime = Field(
         default_factory=datetime.utcnow,
         nullable=False
+    )
+    reminder_at: Optional[datetime] = Field(
+        default=None,
+        nullable=True
+    )
+    is_recurring: bool = Field(
+        default=False,
+        nullable=False
+    )
+    recurrence_interval: Optional[str] = Field(
+        default=None,
+        nullable=True
+    )
+    tags: list[str] = Field(
+        default=[],
+        sa_column=Column(JSON)
     )

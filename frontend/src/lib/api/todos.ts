@@ -1,47 +1,30 @@
 /**
  * Todo API client
- * Functions for todo-related API calls
  */
 import { apiClient } from "./client";
+import { Todo, TodoCreate, TodoUpdate, Priority, PriorityValues } from "../../types/todo";
 
-export type Priority = "LOW" | "MEDIUM" | "HIGH";
+export type { Todo, TodoCreate, TodoUpdate, Priority };
+export { PriorityValues };
 
-export interface Todo {
-    id: string;
-    user_id: string;
-    title: string;
-    description: string | null;
-    completed: boolean;
-    priority: Priority;
-    category: string;
-    due_date: string | null;
-    created_at: string;
-    updated_at: string;
-}
-
-export interface TodoCreate {
-    title: string;
-    description?: string;
-    completed?: boolean;
+export interface TodoFilters {
     priority?: Priority;
-    category?: string;
-    due_date?: string | null;
-}
-
-export interface TodoUpdate {
-    title?: string;
-    description?: string;
-    completed?: boolean;
-    priority?: Priority;
-    category?: string;
-    due_date?: string | null;
+    search?: string;
+    sort_by?: "due_date" | "priority" | "created_at";
+    order?: "asc" | "desc";
 }
 
 /**
  * List all todos for current user
  */
-export async function listTodos(): Promise<Todo[]> {
-    const response = await apiClient.get<Todo[]>("/todos");
+export async function listTodos(filters?: TodoFilters): Promise<Todo[]> {
+    const params = new URLSearchParams();
+    if (filters?.priority) params.append("priority", filters.priority);
+    if (filters?.search) params.append("search", filters.search);
+    if (filters?.sort_by) params.append("sort_by", filters.sort_by);
+    if (filters?.order) params.append("order", filters.order);
+
+    const response = await apiClient.get<Todo[]>(`/todos?${params.toString()}`);
     return response.data;
 }
 
