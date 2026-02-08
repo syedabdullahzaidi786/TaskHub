@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Check, Trash2, Edit3, Clock, Tag, AlertCircle, Calendar } from "lucide-react";
+import { Check, Trash2, Edit3, Clock, Tag, AlertCircle, Calendar, Repeat } from "lucide-react";
 import { Todo } from "@/lib/api/todos";
 import { cn } from "@/utils/cn";
 
@@ -19,7 +19,7 @@ export default function TodoItem({
     onDelete,
     onEdit,
 }: TodoItemProps) {
-    const priorityColors = {
+    const priorityColors: Record<string, string> = {
         HIGH: "bg-rose-100 text-rose-700 border-rose-200",
         MEDIUM: "bg-amber-100 text-amber-700 border-amber-200",
         LOW: "bg-slate-100 text-slate-700 border-slate-200",
@@ -75,10 +75,25 @@ export default function TodoItem({
                                     <Tag className="w-3 h-3" />
                                     {todo.category}
                                 </span>
+                                {todo.is_recurring && (
+                                    <span className="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-100 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                                        <Repeat className="w-3 h-3" />
+                                        {todo.recurrence_interval}
+                                    </span>
+                                )}
+                                {todo.tags && todo.tags.map((tag, i) => (
+                                    <span key={i} className="px-2 py-0.5 rounded-full bg-slate-50 text-slate-500 border border-slate-100 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                                        <Tag className="w-3 h-3" />
+                                        {tag}
+                                    </span>
+                                ))}
                                 {todo.due_date && (
-                                    <span className="px-2 py-0.5 rounded-full bg-slate-50 text-slate-600 border border-slate-100 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                                    <span className={cn(
+                                        "px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wider flex items-center gap-1",
+                                        new Date(todo.due_date) < new Date() && !todo.completed ? "bg-rose-50 text-rose-600 border-rose-100" : "bg-slate-50 text-slate-600 border-slate-100"
+                                    )}>
                                         <Calendar className="w-3 h-3" />
-                                        {new Date(todo.due_date).toLocaleDateString()}
+                                        {new Date(todo.due_date).toLocaleString()}
                                     </span>
                                 )}
                             </div>

@@ -16,6 +16,10 @@ class TodoBase(BaseModel):
     priority: Priority = Field(Priority.MEDIUM, description="Task priority")
     category: str = Field("General", max_length=50, description="Task category")
     due_date: Optional[datetime] = Field(None, description="Optional due date")
+    reminder_at: Optional[datetime] = Field(None, description="Optional reminder date")
+    is_recurring: bool = Field(False, description="Is recurring task")
+    recurrence_interval: Optional[str] = Field(None, description="Recurrence interval")
+    tags: list[str] = Field(default_factory=list, description="Task tags")
 
 class TodoCreate(TodoBase):
     """Schema for creating a new todo"""
@@ -29,6 +33,10 @@ class TodoUpdate(BaseModel):
     priority: Optional[Priority] = None
     category: Optional[str] = Field(None, max_length=50)
     due_date: Optional[datetime] = None
+    reminder_at: Optional[datetime] = None
+    is_recurring: Optional[bool] = None
+    recurrence_interval: Optional[str] = None
+    tags: Optional[list[str]] = None
 
 class TodoResponse(TodoBase):
     """Schema for todo response data"""
