@@ -1,0 +1,43 @@
+replicaCount: 1
+
+image:
+  repository: todo-backend
+  pullPolicy: Never
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 7860
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+env:
+  - name: BETTER_AUTH_URL
+    value: "http://todo-backend:7860"
+  - name: CORS_ORIGINS
+    value: "http://localhost:3000,http://127.0.0.1:3000"
+
+secrets:
+  DATABASE_URL: "postgresql://user:password@hostname:5432/dbname"
+  BETTER_AUTH_SECRET: "replace-with-openssl-rand-hex-32"
+  GEMINI_API_KEY: "replace-with-your-gemini-api-key"
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 7860
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 7860
+  initialDelaySeconds: 10
+  periodSeconds: 5

@@ -70,3 +70,9 @@ frontend/.env.test.local
 frontend/.env.production.local
 .env.example
 .env
+
+
+
+# Helm Secrets
+*.secrets.yaml
+k8s-configs/
